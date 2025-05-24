@@ -16,6 +16,7 @@ function App() {
       <ProductSection />
       <CartSection />
       {modal ? <ModalOverlay /> : null}
+      <Attribution />
     </div>
   );
 }
@@ -54,7 +55,7 @@ function ProductImage({ product }) {
   return (
     <div
       className="product-image"
-      style={isAlreadyInCart ? { border: "2px solid brown" } : {}}
+      style={isAlreadyInCart ? { outline: "1px solid brown" } : {}}
     >
       <picture>
         <source media="(min-width:1440px)" srcSet={desktop} />
@@ -255,5 +256,15 @@ function ModalItem({ item }) {
       </div>
       <p className="total-pricing">${totalPrice.toFixed(2)}</p>
     </li>
+  );
+}
+
+function Attribution() {
+  return (
+    <div class="attribution">
+      Challenge by{" "}
+      <a href="https://www.frontendmentor.io?ref=challenge">Frontend Mentor</a>.
+      Coded by <a href="#">Ashish Vasava</a>.
+    </div>
   );
 }
