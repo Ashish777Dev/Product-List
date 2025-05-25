@@ -37,8 +37,8 @@ Users should be able to:
 
 ### Links
 
-- Solution URL: [Add solution URL here](https://your-solution-url.com)
-- Live Site URL: [Add live site URL here](https://your-live-site-url.com)
+- Solution URL: https://github.com/Ashish777Dev/Product-List
+- Live Site URL: https://ecommerce-product-list.netlify.app
 
 ## My process
 
@@ -50,31 +50,110 @@ Users should be able to:
 - CSS Grid
 - Mobile-first workflow
 - [React](https://reactjs.org/) - JS library
-- [Next.js](https://nextjs.org/) - React framework
-- [Styled Components](https://styled-components.com/) - For styles
-
-**Note: These are just examples. Delete this note and replace the list above with your own choices**
 
 ### What I learned
 
-Use this section to recap over some of your major learnings while working through this project. Writing these out and providing code samples of areas you want to highlight is a great way to reinforce your own knowledge.
-
-To see how you can add code snippets, see below:
-
-```html
-<h1>Some HTML code I'm proud of</h1>
-```
+1.Handle Context Api in React Js
+2.Learned a Css Grid trick
 
 ```css
-.proud-of-this-css {
-  color: papayawhip;
+.product-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  width: 100%;
+
+  place-content: center;
 }
 ```
 
 ```js
-const proudOfThisFunc = () => {
-  console.log("🎉");
-};
+import React, { createContext, useState } from "react";
+import data from "../data.json";
+const ProductContext = createContext();
+
+function ProductContextProvider({ children }) {
+  const [products, setProducts] = useState(data);
+  const [cart, setCart] = useState([]);
+  const [modal, setModal] = useState(false);
+  const addToCart = (newItem) => {
+    setCart((prevCart) => [...prevCart, { ...newItem, quantity: 1 }]);
+  };
+  const findItemInCart = (name) => {
+    return cart.find((item) => item.name === name);
+  };
+  const isAddedToCart = (name) => {
+    return findItemInCart(name) !== undefined;
+  };
+
+  const productQuantity = (name) => {
+    const item = findItemInCart(name);
+    return item ? item.quantity : 1;
+  };
+
+  const increment = (name) => {
+    setCart((prevCart) =>
+      prevCart.map((item) =>
+        item.name === name
+          ? { ...item, quantity: (item.quantity || 0) + 1 }
+          : item
+      )
+    );
+  };
+
+  const decrement = (name) => {
+    setCart((prevCart) =>
+      prevCart
+        .map((item) =>
+          item.name === name
+            ? { ...item, quantity: (item.quantity || 0) - 1 }
+            : item
+        )
+        .filter((item) => item.quantity > 0)
+    );
+  };
+  const removeItem = (name) => {
+    setCart((prevCart) => prevCart.filter((item) => item.name !== name));
+  };
+  const orderTotal = () => {
+    if (!cart) return;
+    return cart.reduce((acc, item) => (acc += item.price * item.quantity), 0);
+  };
+
+  const handleModal = () => {
+    setModal(!modal);
+  };
+
+  const resetAll = () => {
+    setModal(false);
+    setCart([]);
+  };
+  return (
+    <ProductContext.Provider
+      value={{
+        products,
+        setProducts,
+        cart,
+        setCart,
+        addToCart,
+        isAddedToCart,
+        productQuantity,
+        increment,
+        decrement,
+        removeItem,
+        orderTotal,
+        handleModal,
+        modal,
+        setModal,
+        resetAll,
+      }}
+    >
+      {children}
+    </ProductContext.Provider>
+  );
+}
+
+export { ProductContext, ProductContextProvider };
 ```
 
 If you want more help with writing markdown, we'd recommend checking out [The Markdown Guide](https://www.markdownguide.org/) to learn more.
@@ -96,14 +175,5 @@ Use this section to outline areas that you want to continue focusing on in futur
 
 ## Author
 
-- Website - [Add your name here](https://www.your-site.com)
-- Frontend Mentor - [@yourusername](https://www.frontendmentor.io/profile/yourusername)
-- Twitter - [@yourusername](https://www.twitter.com/yourusername)
-
-**Note: Delete this note and add/remove/edit lines above based on what links you'd like to share.**
-
-## Acknowledgments
-
-This is where you can give a hat tip to anyone who helped you out on this project. Perhaps you worked in a team or got some inspiration from someone else's solution. This is the perfect place to give them some credit.
-
-**Note: Delete this note and edit this section's content as necessary. If you completed this challenge by yourself, feel free to delete this section entirely.**
+- Website - https://ecommerce-product-list.netlify.app
+- Frontend Mentor - @Ashish777Dev
